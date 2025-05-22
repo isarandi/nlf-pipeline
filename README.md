@@ -9,6 +9,7 @@ This repository contains tooling infrastructure to apply the model from the Neur
 - **Fitting SMPL**: we use the [SMPLfitter](https://github.com/isarandi/smplfitter) algorithm to fit the SMPL body model to the smoothed nonparametric vertex and joint trajectories. Body shape fitting is done on the level of an entire track, not per frame, for better consistency, and a matching scaling factor is estimated per frame to account for scale ambiguity.
 - **Ground plane estimation**: we estimate the ground plane based on the distribution of foot locations throughout the video, using RANSAC and other steps.
 - **Visualization trajectory generation**: based on the estimated camera trajectory and the human motion, we create a smooth visualization camera trajectory that shows the human from a side view, keeping the subject approximately centered in the frame.
+- **Frame interpolation**: Using RIFE, we may double the framerate for visualization purposes, and also interpolate intermediate human poses. Visualization of human meshes at 24-30 fps often looks jarringly choppy, while 50-60 fps feel much smoother.
 - **Rendering**: we use [PoseViz](https://github.com/isarandi/poseviz) or [BlendiPose](https://github.com/isarandi/blendipose) to render the results.
 
 Setting up all these steps with the dependencies is quite involved. More extensive docs are coming soon. Below is an initial best effort to document the process.

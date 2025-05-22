@@ -1,0 +1,58 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nlf-pipeline"
+version = "0.1.0"
+description = "Toolkit for end-to-end estimation and rendering of human pose and shape from video."
+authors = [
+    { name = "István Sárándi", email = "istvan.sarandi@uni-tuebingen.de" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+
+dependencies = [
+    'numpy',
+    'more-itertools',
+    'opencv-python',
+    'yt-dlp',
+    'pyrender',
+    'trimesh',
+    'pyransac3d',
+    'pytorch-minimize',
+
+    'simplepyutils',
+    'cameravision',
+    'rlemasklib',
+    'smplfitter',
+    'bodycompress',
+    'framepump',
+    'stcnbuf',
+    'blendipose',
+    'poseviz',
+
+    #'poseviz @ git+https://github.com/isarandi/poseviz.git',
+    #'blendipose @ git+https://github.com/isarandi/blendipose.git',
+    #'stcnbuf @ git+https://github.com/isarandi/stcnbuf.git',
+    #'framepump @ git+https://github.com/isarandi/framepump.git',
+    #'simplepyutils @ git+https://github.com/isarandi/simplepyutils.git',
+    #'bodycompress @ git+https://github.com/isarandi/bodycompress.git',
+    #'rlemasklib @ git+https://github.com/isarandi/rlemasklib.git',
+    #'smplfitter @ git+https://github.com/isarandi/smplfitter.git',
+    #'cameravision @ git+https://github.com/isarandi/cameravision.git',
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 99
+skip-string-normalization = true

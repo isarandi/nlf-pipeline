@@ -1,0 +1,73 @@
+name: nlf
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - cython
+  - ffmpeg
+  - imageio
+  - matplotlib
+  - mkl
+  - trimesh
+  - numba
+  - numpy<2.0
+  - pandas
+  - Pillow
+  - scikit-image
+  - scikit-learn
+  - scikit-sparse
+  - tqdm
+  - conda-forge::mayavi>=4.8
+  - conda-forge::PySide6==6.7.1
+  - conda-forge::ffmpeg-python
+  - pip:
+    - addict
+    - av<9
+    - einops
+    - imageio-ffmpeg
+    - importlib_resources
+    - jpeg4py
+    - more_itertools
+    - opencv-python
+    - yacs
+    - florch
+    - cameravision
+    - boxlib
+    - poseviz
+    - smplfitter
+    - simplepyutils
+    - rlemasklib
+    - barecat
+    - yt-dlp
+    - pyrender
+    - pyransac3d
+    - pytorch-minimize
+    - bodycompress
+    - framepump
+    - stcnbuf
+    - blendipose
+    - poseviz
+
+#    - -e $CODE_DIR/fleras
+#    - -e $CODE_DIR/affine_combining_autoencoder
+#    - -e $CODE_DIR/cameravision
+#    - -e $CODE_DIR/boxlib
+#    - -e $CODE_DIR/poseviz
+#    - -e $CODE_DIR/smplfitter
+#    - -e $CODE_DIR/simplepyutils
+#    - -e $CODE_DIR/rlemasklib
+#    - -e $CODE_DIR/BareCat
+#    - -e $CODE_DIR/tensorflow-inputs
+#    - -e $CODE_DIR/posepile
+#    - -e $CODE_DIR/humcentr-cli
+#    - git+https://github.com/isarandi/fleras.git
+#    - git+https://github.com/isarandi/cameravision.git
+#    - git+https://github.com/isarandi/boxlib.git
+#    - git+https://github.com/isarandi/poseviz.git
+#    - git+https://github.com/isarandi/smplfitter.git
+#    - git+https://github.com/isarandi/simplepyutils.git
+#    - git+https://github.com/isarandi/tf-parallel-map.git
+#    - git+https://github.com/isarandi/BareCat.git
+#    - git+https://github.com/isarandi/rlemasklib.git
+#    - git+https://github.com/isarandi/tensorflow-inputs.git

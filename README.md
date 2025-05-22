@@ -1,11 +1,25 @@
+# NLF Pipeline For Multi-Person 3D Pose and Shape Estimation in Video
 
-# Installation
+This repository contains tooling infrastructure to apply the model from the NeurIPS 2024 paper [Neural Localizer Fields for Continuous 3D Human Pose and Shape Estimation](https://github.com/isarandi/nlf) on videos. The NLF model itself is a single-person single-crop model at its core. To apply it to videos, we do the following:
+
+- **Person tracking**: we use video object segmentation, namely a modified version of STCN
+- **Camera motion tracking**: we use DROID-SLAM, acting on non-person pixels
+- **Estimate 3D human pose and shape**: we use the NLF model on the bounding boxes of the STCN masks.
+- **Temporal smoothing**: We apply a median-like (non-learned) temporal smoothing to the world-space vertex and joint predictions of NLF. 
+- **Fitting SMPL**: we use the [SMPLfitter](https://github.com/isarandi/smplfitter) algorithm to fit the SMPL body model to the smoothed nonparametric vertex and joint trajectories. Body shape fitting is done on the level of an entire track, not per frame, for better consistency, and a matching scaling factor is estimated per frame to account for scale ambiguity.
+- **Ground plane estimation**: we estimate the ground plane based on the distribution of foot locations throughout the video, using RANSAC and other steps.
+- **Visualization trajectory generation**: based on the estimated camera trajectory and the human motion, we create a smooth visualization camera trajectory that shows the human from a side view, keeping the subject approximately centered in the frame.
+- **Rendering**: we use [PoseViz](https://github.com/isarandi/poseviz) or [BlendiPose](https://github.com/isarandi/blendipose) to render the results.
+
+Setting up all these steps with the dependencies is quite involved. More extensive docs are coming soon. Below is an initial best effort to document the process.
+
+## Installation
 
 ```bash
 pip install git+https://github.com/isarandi/nlf-pipeline.git
 ```
 
-# Initial setup and data
+## Initial setup and data
 
 Choose a working directory and set `INFERENCE_ROOT`:
 
@@ -22,7 +36,7 @@ mkdir -p $INFERENCE_ROOT/{videos_in,videos_out,masks,masks_semseg,cameras,camera
 Put the input video(s) in the input folder, as `$INFERENCE_ROOT/videos_in/${vid}.mp4`. Whatever is the 
 name of the file before the extension will be the identifier of the video, also used for intermediate and result outputs.
 
-# Single-command processing
+## Single-command processing
 
 To process a video from start to finish, you can use `run_all.py`. The simplest usage is:
 
@@ -44,9 +58,9 @@ You can also specify `--static-camera`, then the camera motion estimation step w
 
 If a video with path `$INFERENCE_ROOT/videos_in/${vid}.mp4` does not exist, then the script will try to download it from YouTube, using the value of `--video-id` as the YouTube video ID.
 
-# Step-by-step processing
+## Step-by-step processing
 
-## Step 1 [optional]: Video object segmentation (STCN)
+### Step 1 [optional]: Video object segmentation (STCN)
 
 To have coherent person tracks, it is beneficial to run a video object segmentation model first.
 
@@ -74,7 +88,7 @@ once we've processed the full video and built up good representations of the sub
 The `--morph-cleanup` option applies some morphological cleanup operations to the masks, removing speckles, filling holes, removing mask parts that are far from the largest connected component etc.
 This makes the bounding box of the resulting mask more reliable for the next steps.
 
-## Step 2 [optional]: Camera motion estimation (DROID-SLAM)
+### Step 2 [optional]: Camera motion estimation (DROID-SLAM)
 
 As [Wang et al. (2024)](https://arxiv.org/abs/2403.17346) have shown, 3D human estimation with dynamic cameras can be tackled by estimating camera motion via SLAM, specifically DROID-SLAM.
 
@@ -116,7 +130,7 @@ To verify that this step gave reasonable results, you can visualize the camera t
 python -m nlf_pipeline.viz_camtraj --video-id=$vid --camera-view
 ```
 
-## Step 3: Nonparametric 3D human pose and shape estimation (NLF)
+### Step 3: Nonparametric 3D human pose and shape estimation (NLF)
 
 Let's run the main part of the pipeline, the actual 3D human estimation. 
 
@@ -147,7 +161,7 @@ This will save all the predicted vertex and joint coordinates for every frame an
 
 The `--viz` option will open a GUI window where you can see the 3D predictions in real time, visualized via [PoseViz](https://github.com/isarandi/poseviz).
 
-## Step 4: SMPL fitting and temporal smoothing
+### Step 4: SMPL fitting and temporal smoothing
 
 The above results are already usable, but perform some post-processing. First, we can fit the SMPL model to the predicted vertices and joints. This will give us a more compact representation and allows us to leverage the body shape prior of SMPL. Also, many applications require SMPL parameters as input.
 
@@ -161,7 +175,7 @@ python -m nlf_pipeline.run_smoothed_smplfitter --video-id=$vid
 
 This also estimates the ground plane based on the distribution of foot locations throughout the video, using RANSAC and other steps.
 
-## Step 5: Rendering
+### Step 5: Rendering
 
 We can now render the results with [PoseViz](https://github.com/isarandi/poseviz) or [BlendiPose](https://github.com/isaran/blendipose).
 
